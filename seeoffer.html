@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Apple Store</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <!-- Custom CSS -->
+  <style>
+    body {
+      background-color: #f6f6f8;
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .gradient-text {
+      font-size: 3rem;
+      font-weight: 600;
+      background: linear-gradient(90deg, #d801e7 0%, #55018e 50%, #f401ec 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: left;
+      margin: 1rem;
+    }
+
+    .emi-title {
+      color: #0a0a0a;
+      background-color: #fff;
+      text-align: center;
+      padding: 25px 10px;
+      margin: 1rem 0;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .offer {
+      text-align: center;
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 1rem;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Apple-style shop button */
+    .shop-btn {
+      display: inline-block;
+      background-color: #0707078e;  /* Apple blue */
+      color: #fff;
+      font-weight: 500;
+      border: none;
+      border-radius: 25px;
+      padding: 8px 20px;
+      margin-top: 10px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .shop-btn:hover {
+      background-color: #060606;
+      color: #fff;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 768px) {
+      .gradient-text { font-size: 2.25rem; text-align: center; }
+      .emi-title, .offer { padding: 15px 5px; font-size: 0.95rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Apple Logo -->
+  <div class="emi-title">
+    <img src="Black-Apple-Logo-PNG-Photos.png" alt="Apple Logo" class="img-fluid" style="max-height:50px;">
+  </div>
+
+  <!-- Title -->
+  <div class="container">
+    <div class="gradient-text">The best ways to buy from Apple.</div>
+    <p>No matter how you like to buy, we have an option that works for you. Pay in low monthly instalments with EMI or get your interest back instantly with No Cost EMI. Plus you can save money with available cashback offers. And, if you’re buying a new iPhone, you can exchange your current smartphone for instant credit.</p>
+  </div>
+
+  <!-- Special Offers -->
+  <div class="emi-title">
+    <p><strong>Special Offers.</strong><br>
+      Get up to 12 months of No Cost EMI§ with most leading banks. Plus up to ₹10,000 instant cashback§§ with eligible American Express, Axis Bank and ICICI Bank cards.<br>
+      See how much you could save below.
+    </p>
+  </div>
+
+  <!-- iPhone Offers -->
+  <div class="offer">
+    <b>iPhone Offers</b><br>
+    iPhone 17 Pro and Pro Max - ₹5000<br>
+    iPhone Air - ₹5000<br>
+    iPhone 17 - ₹5000<br>
+    iPhone 16 and 16 Plus - ₹4000<br>
+    iPhone 16e - ₹4000<br>
+    <a href="iPhone.html" class="shop-btn">Shop iPhone</a>
+  </div>
+
+  <!-- Mac Offers -->
+  <div class="offer">
+    <b>Mac Offers</b><br>
+    MacBook Air 13” & 15” - ₹10000<br>
+    MacBook Pro 14” & 16” - ₹10000<br>
+    iMac - ₹5000<br>
+    Mac Studio - ₹10000<br>
+    Mac mini - ₹4000<br>
+    <a href="Mac.html" class="shop-btn">Shop Mac</a>
+  </div>
+
+  <!-- iPad Offers -->
+  <div class="offer">
+    <b>iPad Offers</b><br>
+    iPad Air 11” & 13” - ₹4000<br>
+    iPad - ₹3000<br>
+    iPad mini - ₹3000<br>
+    iPad Pro - ₹4000<br>
+    <a href="iPad.html" class="shop-btn">Shop iPad</a>
+  </div>
+
+  <!-- Watch Offers -->
+  <div class="offer">
+    <b>Apple Watch Offers</b><br>
+    Ultra 3 - ₹6000<br>
+    Series 11 - ₹4000<br>
+    SE 3 - ₹2000<br>
+    <a href="Watch.html" class="shop-btn">Shop Watch</a>
+  </div>
+
+  <!-- AirPods Offers -->
+  <div class="offer">
+    <b>AirPods Offers</b><br>
+    AirPods Pro 3 - ₹1000<br>
+    AirPods 4 - ₹1000<br>
+    AirPods 4 with ANC - ₹1000<br>
+    AirPods Max - ₹4000<br>
+    <a href="AirPods.html" class="shop-btn">Shop AirPods</a>
+  </div>
+
+  <!-- HomePod Offers -->
+  <div class="offer">
+    <b>HomePod Offers</b><br>
+    HomePod - ₹2000<br>
+    <a href="TV&Home.html" class="shop-btn">Shop HomePod</a>
+  </div>
+
+  <!-- Beats Offers -->
+  <div class="offer">
+    <b>Beats Offers</b><br>
+    Beats Studio Pro - ₹2000<br>
+    Beats Solo 4 - ₹1500<br>
+    Beats Studio Buds+ - ₹1500<br>
+    Beats Powerbeats Pro 2 - ₹1500<br>
+    Beats Pill - ₹1500<br>
+    <a href="AirPods.html" class="shop-btn">Shop AirBuds</a>
+  </div>
+
+  <!-- Monthly Payments Info -->
+  <div class="container text-center my-4">
+    <h5><b>Here’s how to estimate your monthly payments.</b></h5>
+    <p>Explore your online purchase options by selecting your account type and bank, then enter an estimated order total. Your total savings, including any special offers, will be calculated in checkout.</p>
+  </div>
+
+  <!-- Trade In -->
+  <div class="emi-title">
+    <img src="img1.jpg" alt="Trade-in" class="img-fluid rounded mb-3"><br>
+    <b>Apple Trade In</b><br>
+    Save up to ₹64,000 when you exchange your eligible smartphone.<br>
+    Exchange your old smartphone to lower the price of your new iPhone — and your monthly instalments.
+  </div>
+
+  <!-- Bank Section -->
+  <div class="emi-title">
+    <img src="bank.png" alt="Bank Offers" class="img-fluid mb-2" style="max-width: 450px;"><br>
+    <b>Apple</b><br>
+    Ways to Buy - EMI & Finance Options<br>
+    More ways to shop: Find an Apple Store near you or call 000800 040 1966.<br>
+    <small>India<br>
+    © 2025 Apple Inc. All rights reserved.<br>
+    Privacy Policy | Terms of Use | Sales Policy | Legal Site Map</small>
+  </div>
+
+  <!-- Back Button -->
+  <div class="text-center mb-4">
+    <a href="index.html" class="shop-btn" style="background-color:#050505cd;">BACK</a>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Account - Apple Store</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <!-- Custom CSS -->
+  <style>
+    /* Reuse your existing styles */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      background-color: #f6f6f8;
+      color: #1d1d1f;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 600;
+    }
+    
+    .navbar {
+      background-color: #f6f6f8;
+    }
+    
+    .navbar-brand, .nav-link {
+      color: #060606 !important;
+    }
+    
+    .btn-checkout {
+      background: linear-gradient(45deg, #060606, #0c0c0c);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 12px 30px;
+      font-weight: 600;
+    }
+    
+    .btn-checkout:hover {
+      background: linear-gradient(45deg, #fb15bd, #ff310d);
+    }
+    
+    /* Account page specific styles */
+    .account-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .account-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+    
+    .account-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0071e3, #7e34f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+      margin-right: 20px;
+    }
+    
+    .account-info h1 {
+      margin-bottom: 5px;
+    }
+    
+    .account-info p {
+      color: #6e6e73;
+      margin-bottom: 0;
+    }
+    
+    .account-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+    
+    .account-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .account-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .account-card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .account-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background-color: #f5f5f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      color: #0071e3;
+      font-size: 1.2rem;
+    }
+    
+    .account-card-title {
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 0;
+    }
+    
+    .account-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .account-list-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .account-list-item:last-child {
+      border-bottom: none;
+    }
+    
+    .account-list-item a {
+      color: #1d1d1f;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+    
+    .account-list-item a:hover {
+      color: #0071e3;
+    }
+    
+    .account-list-item i {
+      color: #6e6e73;
+    }
+    
+    .account-section {
+      margin-bottom: 40px;
+    }
+    
+    .account-section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .order-card {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .order-id {
+      font-weight: 600;
+    }
+    
+    .order-date {
+      color: #6e6e73;
+    }
+    
+    .order-status {
+      background-color: #34c759;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .order-items {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      overflow-x: auto;
+    }
+    
+    .order-item-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+    
+    .order-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 15px;
+      border-top: 1px solid #f0f0f0;
+    }
+    
+    .order-total {
+      font-weight: 600;
+    }
+    
+    .order-actions a {
+      color: #0071e3;
+      text-decoration: none;
+      margin-left: 15px;
+    }
+    
+    .order-actions a:hover {
+      text-decoration: underline;
+    }
+    
+    .payment-method {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .payment-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background-color: #f5f5f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      color: #0071e3;
+    }
+    
+    .payment-details {
+      flex: 1;
+    }
+    
+    .payment-name {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .payment-info {
+      color: #6e6e73;
+      font-size: 0.9rem;
+    }
+    
+    .btn-account {
+      border: 1px solid #d2d2d7;
+      border-radius: 25px;
+      padding: 10px 20px;
+      background: white;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: inline-block;
+      text-decoration: none;
+      color: #1d1d1f;
+      text-align: center;
+    }
+    
+    .btn-account:hover {
+      background: #f5f5f7;
+      color: #1d1d1f;
+    }
+    
+    .btn-account.primary {
+      background: #0071e3;
+      color: white;
+      border-color: #0071e3;
+    }
+    
+    .btn-account.primary:hover {
+      background: #0056b3;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .account-container {
+        padding: 10px;
+      }
+      
+      .account-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .account-avatar {
+        margin-right: 0;
+        margin-bottom: 15px;
+      }
+      
+      .account-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .order-status {
+        margin-top: 10px;
+      }
+      
+      .order-footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+       /* Footer text and link color fix */
+footer, footer a {
+  color: #3a3a3a !important;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+  color: #000;
+}
+
+      .order-actions {
+        margin-top: 10px;
+      }
+    }
+
+     /* Apple-style shop button */
+    .shop-btn {
+      display: inline-block;
+      background-color: #0707078e;  /* Apple blue */
+      color: #fff;
+      font-weight: 500;
+      border: none;
+      border-radius: 25px;
+      padding: 8px 20px;
+      margin-top: 10px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .shop-btn:hover {
+      background-color: #060606;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation (same as your main page) -->
+  <nav class="navbar navbar-expand-lg navbar">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="Black-Apple-Logo-PNG-Photos.png" alt="Logo" width="25" height="25">
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <button class="btn" data-bs-toggle="modal" data-bs-target="#checkoutModal1">
+                <i class="bi bi-search"></i>
+              </button>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <button class="btn" data-bs-toggle="modal" data-bs-target="#checkoutModal2">
+                <i class="bi bi-bag-check-fill" style="font-size:20px; color:#000;"></i>
+              </button>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <button class="btn" data-bs-toggle="modal" data-bs-target="#checkoutModal3">
+                <i class="bi bi-list" style="font-size:20px; color:#000;"></i>
+              </button>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Account Page Content -->
+  <div class="account-container">
+    <!-- Account Header -->
+    <div class="account-header">
+      <div class="account-avatar">
+        <i class="bi bi-person-fill"></i>
+      </div>
+      <div class="account-info">
+        <h1>Rahul Sharma</h1>
+        <p>rahul.sharma@example.com</p>
+        <p>Member since January 2023</p>
+      </div>
+    </div>
+    
+    <!-- Quick Actions Grid -->
+    <div class="account-grid">
+      <!-- Orders Card -->
+      <div class="account-card">
+        <div class="account-card-header">
+          <div class="account-card-icon">
+            <i class="bi bi-bag-check"></i>
+          </div>
+          <h3 class="account-card-title">Orders</h3>
+        </div>
+        <ul class="account-list">
+          <li class="account-list-item">
+            <a href="#">
+              <span>Recent Orders</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+          <li class="account-list-item">
+            <a href="#">
+              <span>Buy Again</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+          <li class="account-list-item">
+            <a href="#">
+              <span>Canceled Orders</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+          <li class="account-list-item">
+            <a href="#">
+              <span>View All Orders</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Your Saves Card -->
+      <div class="account-card">
+        <div class="account-card-header">
+          <div class="account-card-icon">
+            <i class="bi bi-heart"></i>
+          </div>
+          <h3 class="account-card-title">Your Saves</h3>
+        </div>
+        <ul class="account-list">
+          <li class="account-list-item">
+            <a href="#">
+              <span>Wishlist (4 items)</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+          <li class="account-list-item">
+            <a href="#">
+              <span>Saved for Later</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+          <li class="account-list-item">
+            <a href="#">
+              <span>Recently Viewed</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Account Settings Card -->
+      <div class="account-card">
+        <div class="account-card-header">
+          <div class="account-card-icon">
+            <i class="bi bi-gear"></i>
+          </div>
+          <h3 class="account-card-title">Account Settings</h3>
+        </div>
+        <ul class="account-list">
+          <li class="account-list-item">
+            <a href="#">
+              <span>Personal Information</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+          <li class="account-list-item">
+            <a href="#">
+              <span>Login & Security</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+          <li class="account-list-item">
+            <a href="#">
+              <span>Payment Methods</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+          <li class="account-list-item">
+            <a href="#">
+              <span>Addresses</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+          <li class="account-list-item">
+            <a href="#">
+              <span>Communication Preferences</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Support Card -->
+      <div class="account-card">
+        <div class="account-card-header">
+          <div class="account-card-icon">
+            <i class="bi bi-headset"></i>
+          </div>
+          <h3 class="account-card-title">Support</h3>
+        </div>
+        <ul class="account-list">
+          <li class="account-list-item">
+            <a href="#">
+              <span>Contact Support</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+          <li class="account-list-item">
+            <a href="#">
+              <span>Device Support</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+          <li class="account-list-item">
+            <a href="#">
+              <span>Repair Status</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+          <li class="account-list-item">
+            <a href="#">
+              <span>AppleCare+ Coverage</span>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Recent Orders Section -->
+    <div class="account-section">
+      <h2 class="account-section-title">Recent Orders</h2>
+      
+      <!-- Order 1 -->
+      <div class="order-card">
+        <div class="order-header">
+          <div>
+            <div class="order-id">Order #W123456789</div>
+            <div class="order-date">Placed on October 15, 2025</div>
+          </div>
+          <div class="order-status">Delivered</div>
+        </div>
+        <div class="order-items">
+          <img src="store-card-40-iphone-17-pro-202509.jpeg" class="order-item-image" alt="iPhone 17 Pro">
+          <img src="store-card-40-airpods-pro-202509.jpeg" class="order-item-image" alt="AirPods Pro">
+        </div>
+        <div class="order-footer">
+          <div class="order-total">Total: ₹1,60,800.00</div>
+          <div class="order-actions">
+            <a href="#">View Order Details</a>
+            <a href="#">Buy Again</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Order 2 -->
+      <div class="order-card">
+        <div class="order-header">
+          <div>
+            <div class="order-id">Order #W123456788</div>
+            <div class="order-date">Placed on September 28, 2025</div>
+          </div>
+          <div class="order-status" style="background-color: #ff9500;">Processing</div>
+        </div>
+        <div class="order-items">
+          <img src="store-card-40-macbook-pro-202510.jpeg" class="order-item-image" alt="MacBook Pro">
+        </div>
+        <div class="order-footer">
+          <div class="order-total">Total: ₹2,39,900.00</div>
+          <div class="order-actions">
+            <a href="#">View Order Details</a>
+            <a href="#">Track Order</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-4">
+        <a href="#" class="btn-account">View All Orders</a>
+      </div>
+    </div>
+    
+    <!-- Payment Methods Section -->
+    <div class="account-section">
+      <h2 class="account-section-title">Payment Methods</h2>
+      
+      <div class="payment-method">
+        <div class="payment-icon">
+          <i class="bi bi-credit-card"></i>
+        </div>
+        <div class="payment-details">
+          <div class="payment-name">Visa ending in 4321</div>
+          <div class="payment-info">Expires 05/2027</div>
+        </div>
+        <div>
+          <a href="#" class="btn-account">Edit</a>
+        </div>
+      </div>
+      
+      <div class="payment-method">
+        <div class="payment-icon">
+          <i class="bi bi-credit-card"></i>
+        </div>
+        <div class="payment-details">
+          <div class="payment-name">Mastercard ending in 8765</div>
+          <div class="payment-info">Expires 11/2026</div>
+        </div>
+        <div>
+          <a href="#" class="btn-account">Edit</a>
+        </div>
+      </div>
+      
+      <div class="payment-method">
+        <div class="payment-icon">
+          <i class="bi bi-wallet"></i>
+        </div>
+        <div class="payment-details">
+          <div class="payment-name">Apple Pay</div>
+          <div class="payment-info">Default payment method</div>
+        </div>
+        <div>
+          <a href="#" class="btn-account">Edit</a>
+        </div>
+      </div>
+      
+      <div class="text-center mt-4">
+        <a href="#" class="btn-account">Add Payment Method</a>
+      </div>
+    </div>
+    
+    <!-- Shipping Addresses Section -->
+    <div class="account-section">
+      <h2 class="account-section-title">Shipping Addresses</h2>
+      
+      <div class="account-card">
+        <div class="account-card-header">
+          <h3 class="account-card-title">Default Address</h3>
+        </div>
+        <div class="mb-3">
+          <p><strong>Rahul Sharma</strong></p>
+          <p>123 Apple Park Way</p>
+          <p>Cupertino, CA 95014</p>
+          <p>United States</p>
+          <p>Phone: +1 (408) 996-1010</p>
+        </div>
+        <div>
+          <a href="#" class="btn-account me-2">Edit</a>
+          <a href="#" class="btn-account">Add New Address</a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Account Actions -->
+    <div class="account-section">
+      <h2 class="account-section-title">Account Actions</h2>
+      
+      <div class="d-flex flex-wrap gap-3">
+        <a href="#" class="btn-account">Edit Personal Information</a>
+        <a href="#" class="btn-account">Change Password</a>
+        <a href="#" class="btn-account">Two-Factor Authentication</a>
+        <a href="#" class="btn-account">Privacy Settings</a>
+        <a href="#" class="btn-account" style="color: #ff3b30;">Sign Out</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer (same as your main page) -->
+  <footer class="footer mt-5">
+    <div class="container">
+      <div class="text-start mb-4">
+        <p class="mb-1"><img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" width="15"> &nbsp; > &nbsp; Account</p>
+      </div>
+
+      <div class="row footer-section">
+        <div class="col-6 col-md-2">
+          <h6>Shop and Learn</h6>
+          <ul>
+            <li><a href="#">Store</a></li>
+            <li><a href="#">Mac</a></li>
+            <li><a href="#">iPad</a></li>
+            <li><a href="#">iPhone</a></li>
+            <li><a href="#">Watch</a></li>
+            <li><a href="#">AirPods</a></li>
+            <li><a href="#">TV & Home</a></li>
+            <li><a href="#">AirTag</a></li>
+            <li><a href="#">Accessories</a></li>
+            <li><a href="#">Gift Cards</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <h6>Account</h6>
+          <ul>
+            <li><a href="#">Manage Your Apple Account</a></li>
+            <li><a href="#">Apple Store Account</a></li>
+            <li><a href="#">iCloud.com</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <h6>Apple Store</h6>
+          <ul>
+            <li><a href="#">Find a Store</a></li>
+            <li><a href="#">Genius Bar</a></li>
+            <li><a href="#">Today at Apple</a></li>
+            <li><a href="#">Ways to Buy</a></li>
+            <li><a href="#">Apple Trade In</a></li>
+            <li><a href="#">Recycling Programme</a></li>
+            <li><a href="#">Order Status</a></li>
+            <li><a href="#">Shopping Help</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <h6>About Apple</h6>
+          <ul>
+            <li><a href="#">Newsroom</a></li>
+            <li><a href="#">Apple Leadership</a></li>
+            <li><a href="#">Career Opportunities</a></li>
+            <li><a href="#">Investors</a></li>
+            <li><a href="#">Ethics & Compliance</a></li>
+            <li><a href="#">Contact Apple</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="more-ways">
+        More ways to shop: <a href="#">Find an Apple Store</a> or <a href="#">other retailer</a> near you. Or call 000800 040 1966.
+      </div>
+
+      <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between">
+        <div>Copyright © 2025 Apple Inc. All rights reserved.</div>
+        <div>
+          <a href="#">Privacy Policy</a> |
+          <a href="#">Terms of Use</a> |
+          <a href="#">Sales Policy</a> |
+          <a href="#">Legal</a> |
+          <a href="#">Site Map</a>
+        </div>
+        <div>India</div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="text-center mb-4">
+    <a href="index.html" class="shop-btn" style="background-color:#050505cd;">BACK</a>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Account Page JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Simple interactions for demonstration
+      const accountCards = document.querySelectorAll('.account-card');
+      
+      accountCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+          // Don't trigger if clicking on a link inside the card
+          if (!e.target.closest('a')) {
+            const firstLink = this.querySelector('a');
+            if (firstLink) {
+              window.location.href = firstLink.href;
+            }
+          }
+        });
+      });
+      
+      // Order status colors
+      const statusElements = document.querySelectorAll('.order-status');
+      statusElements.forEach(status => {
+        const statusText = status.textContent.toLowerCase();
+        if (statusText.includes('processing')) {
+          status.style.backgroundColor = '#ff9500'; // Orange
+        } else if (statusText.includes('shipped')) {
+          status.style.backgroundColor = '#0071e3'; // Blue
+        } else if (statusText.includes('delivered')) {
+          status.style.backgroundColor = '#34c759'; // Green
+        } else if (statusText.includes('canceled')) {
+          status.style.backgroundColor = '#ff3b30'; // Red
+        }
+      });
+    });
+  </script>
+</body>
+</html>

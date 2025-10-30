@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Store Settings - Apple Store Admin</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <style>
+    :root {
+      --apple-blue: #0071e3;
+      --apple-light-gray: #f5f5f7;
+      --apple-dark-gray: #1d1d1f;
+      --apple-border: #d2d2d7;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      background-color: var(--apple-light-gray);
+      color: var(--apple-dark-gray);
+    }
+    
+    .admin-header {
+      background-color: white;
+      border-bottom: 1px solid var(--apple-border);
+      padding: 15px 0;
+    }
+    
+    .admin-sidebar {
+      background-color: white;
+      min-height: calc(100vh - 80px);
+      border-right: 1px solid var(--apple-border);
+      padding: 20px 0;
+    }
+    
+    .admin-sidebar .nav-link {
+      color: var(--apple-dark-gray);
+      padding: 12px 20px;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+    }
+    
+    .admin-sidebar .nav-link i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+    
+    .admin-sidebar .nav-link.active {
+      background-color: var(--apple-blue);
+      color: white;
+    }
+    
+    .admin-sidebar .nav-link:hover:not(.active) {
+      background-color: rgba(0, 113, 227, 0.1);
+    }
+    
+    .admin-content {
+      padding: 30px;
+    }
+    
+    .settings-card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 25px;
+    }
+    
+    .settings-section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--apple-border);
+    }
+    
+    .form-label {
+      font-weight: 500;
+      color: var(--apple-dark-gray);
+      margin-bottom: 8px;
+    }
+    
+    .form-control, .form-select {
+      border-radius: 8px;
+      padding: 10px 15px;
+      border: 1px solid var(--apple-border);
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: var(--apple-blue);
+      box-shadow: 0 0 0 0.2rem rgba(0, 113, 227, 0.1);
+    }
+    
+    .btn-primary {
+      background-color: var(--apple-blue);
+      border-color: var(--apple-blue);
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 500;
+    }
+    
+    .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+    }
+    
+    .btn-outline-secondary {
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 500;
+    }
+    
+    .logo-preview {
+      width: 120px;
+      height: 120px;
+      border-radius: 12px;
+      border: 1px dashed var(--apple-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+      overflow: hidden;
+    }
+    
+    .logo-preview img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+    
+    .file-upload {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+    }
+    
+    .file-upload input[type="file"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    
+    .settings-tabs {
+      border-bottom: 1px solid var(--apple-border);
+      margin-bottom: 25px;
+    }
+    
+    .settings-tabs .nav-link {
+      color: #86868b;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px 8px 0 0;
+      margin-right: 5px;
+      font-weight: 500;
+    }
+    
+    .settings-tabs .nav-link.active {
+      background-color: var(--apple-blue);
+      color: white;
+    }
+    
+    .settings-tabs .nav-link:hover:not(.active) {
+      background-color: rgba(0, 113, 227, 0.1);
+    }
+    
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    
+    .status-badge.active {
+      background-color: rgba(52, 199, 89, 0.1);
+      color: #34c759;
+    }
+    
+    .status-badge.inactive {
+      background-color: rgba(255, 59, 48, 0.1);
+      color: #ff3b30;
+    }
+    
+    .integration-card {
+      border: 1px solid var(--apple-border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 15px;
+      transition: all 0.3s;
+    }
+    
+    .integration-card:hover {
+      border-color: var(--apple-blue);
+    }
+    
+    .integration-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--apple-light-gray);
+      margin-right: 15px;
+    }
+    
+    .integration-logo i {
+      font-size: 1.2rem;
+      color: var(--apple-blue);
+    }
+    
+    .form-check-input:checked {
+      background-color: var(--apple-blue);
+      border-color: var(--apple-blue);
+    }
+    
+    .form-switch .form-check-input {
+      width: 3em;
+      height: 1.5em;
+    }
+    
+    @media (max-width: 768px) {
+      .admin-sidebar {
+        min-height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--apple-border);
+      }
+      
+      .admin-content {
+        padding: 20px;
+      }
+      
+      .settings-card {
+        padding: 20px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .admin-content {
+        padding: 15px;
+      }
+      
+      .settings-card {
+        padding: 15px;
+      }
+      
+      .settings-tabs .nav-link {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <a href="index.html" class="d-flex align-items-center text-decoration-none">
+            <img src="Black-Apple-Logo-PNG-Photos.png" alt="Apple Logo" width="25" height="25" class="me-2">
+            <span class="fw-bold" style="color: var(--apple-dark-gray);">Store Admin</span>
+          </a>
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="dropdown">
+            <button class="btn btn-link text-decoration-none dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="color: var(--apple-dark-gray);">
+              <i class="bi bi-person-circle me-1"></i> Admin User
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="userDropdown">
+              <li><a class="dropdown-item" href="profile.html"><i class="bi bi-person me-2"></i>Profile</a></li>
+              <li><a class="dropdown-item" href="settings.html"><i class="bi bi-gear me-2"></i>Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="index.html"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-3 col-lg-2 admin-sidebar">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="account.html">
+              <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="products.html">
+              <i class="bi bi-box-seam"></i> Products
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="orders.html">
+              <i class="bi bi-cart-check"></i> Orders
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="customers.html">
+              <i class="bi bi-people"></i> Customers
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="inventory.html">
+              <i class="bi bi-clipboard-data"></i> Inventory
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="analytics.html">
+              <i class="bi bi-graph-up"></i> Analytics
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="settings.html">
+              <i class="bi bi-gear"></i> Settings
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-md-9 col-lg-10 admin-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1 class="h3 mb-0">Store Settings</h1>
+          <div class="d-flex">
+            <button class="btn btn-outline-secondary me-2">
+              <i class="bi bi-arrow-clockwise me-1"></i> Reset
+            </button>
+            <button class="btn btn-primary" onclick="saveSettings()">
+              <i class="bi bi-check-circle me-1"></i> Save Changes
+            </button>
+          </div>
+        </div>
+
+        <!-- Settings Tabs -->
+        <ul class="nav settings-tabs" id="settingsTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab" aria-controls="general" aria-selected="true">
+              <i class="bi bi-shop me-1"></i> General
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="payment-tab" data-bs-toggle="tab" data-bs-target="#payment" type="button" role="tab" aria-controls="payment" aria-selected="false">
+              <i class="bi bi-credit-card me-1"></i> Payment
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab" aria-controls="shipping" aria-selected="false">
+              <i class="bi bi-truck me-1"></i> Shipping
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="notifications-tab" data-bs-toggle="tab" data-bs-target="#notifications" type="button" role="tab" aria-controls="notifications" aria-selected="false">
+              <i class="bi bi-bell me-1"></i> Notifications
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="integrations-tab" data-bs-toggle="tab" data-bs-target="#integrations" type="button" role="tab" aria-controls="integrations" aria-selected="false">
+              <i class="bi bi-puzzle me-1"></i> Integrations
+            </button>
+          </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="settingsTabContent">
+          <!-- General Settings -->
+          <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Store Information</h3>
+                  
+                  <div class="mb-4">
+                    <label for="storeName" class="form-label">Store Name</label>
+                    <input type="text" class="form-control" id="storeName" value="Apple Premium Reseller">
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="storeEmail" class="form-label">Store Email</label>
+                    <input type="email" class="form-control" id="storeEmail" value="contact@applereseller.in">
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="storePhone" class="form-label">Store Phone</label>
+                    <input type="tel" class="form-control" id="storePhone" value="+91 98765 43210">
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="storeAddress" class="form-label">Store Address</label>
+                    <textarea class="form-control" id="storeAddress" rows="3">123 Apple Plaza, Connaught Place, New Delhi, 110001</textarea>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="storeDescription" class="form-label">Store Description</label>
+                    <textarea class="form-control" id="storeDescription" rows="3">Official Apple Premium Reseller offering the complete range of Apple products including iPhone, Mac, iPad, Apple Watch, and accessories.</textarea>
+                  </div>
+                </div>
+                
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Store Preferences</h3>
+                  
+                  <div class="mb-4">
+                    <label for="currency" class="form-label">Currency</label>
+                    <select class="form-select" id="currency">
+                      <option value="INR" selected>Indian Rupee (₹)</option>
+                      <option value="USD">US Dollar ($)</option>
+                      <option value="EUR">Euro (€)</option>
+                      <option value="GBP">British Pound (£)</option>
+                    </select>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="timezone" class="form-label">Timezone</label>
+                    <select class="form-select" id="timezone">
+                      <option value="IST" selected>India Standard Time (IST)</option>
+                      <option value="UTC">UTC</option>
+                      <option value="EST">Eastern Standard Time (EST)</option>
+                      <option value="PST">Pacific Standard Time (PST)</option>
+                    </select>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="dateFormat" class="form-label">Date Format</label>
+                    <select class="form-select" id="dateFormat">
+                      <option value="DD/MM/YYYY" selected>DD/MM/YYYY</option>
+                      <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                      <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                    </select>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="maintenanceMode" checked>
+                    <label class="form-check-label" for="maintenanceMode">Enable Maintenance Mode</label>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="customerReviews" checked>
+                    <label class="form-check-label" for="customerReviews">Allow Customer Reviews</label>
+                  </div>
+                  
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="guestCheckout" checked>
+                    <label class="form-check-label" for="guestCheckout">Allow Guest Checkout</label>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-lg-6">
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Store Logo</h3>
+                  
+                  <div class="logo-preview mb-3">
+                    <img src="Black-Apple-Logo-PNG-Photos.png" alt="Store Logo" id="logoPreview">
+                  </div>
+                  
+                  <div class="file-upload mb-3">
+                    <button class="btn btn-outline-secondary">
+                      <i class="bi bi-cloud-upload me-1"></i> Upload New Logo
+                    </button>
+                    <input type="file" id="logoUpload" accept="image/*" onchange="previewLogo(event)">
+                  </div>
+                  
+                  <p class="text-muted small">Recommended size: 300x300 pixels. Max file size: 2MB.</p>
+                </div>
+                
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Store Policies</h3>
+                  
+                  <div class="mb-4">
+                    <label for="returnPolicy" class="form-label">Return Policy</label>
+                    <textarea class="form-control" id="returnPolicy" rows="4">We offer a 14-day return policy for all products in their original condition with packaging. Apple products must be returned with all accessories and in resalable condition.</textarea>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="shippingPolicy" class="form-label">Shipping Policy</label>
+                    <textarea class="form-control" id="shippingPolicy" rows="4">We offer free shipping on all orders above ₹5000. Standard delivery takes 3-5 business days. Express delivery is available for an additional charge.</textarea>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="privacyPolicy" class="form-label">Privacy Policy</label>
+                    <textarea class="form-control" id="privacyPolicy" rows="4">We are committed to protecting your privacy. We collect only necessary information to process your orders and provide you with the best shopping experience.</textarea>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="termsOfService" class="form-label">Terms of Service</label>
+                    <textarea class="form-control" id="termsOfService" rows="4">By using our store, you agree to these terms and conditions. We reserve the right to update these terms at any time without prior notice.</textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Payment Settings -->
+          <div class="tab-pane fade" id="payment" role="tabpanel" aria-labelledby="payment-tab">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Payment Methods</h3>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="creditCard" checked>
+                    <label class="form-check-label" for="creditCard">Credit/Debit Cards</label>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="paypal" checked>
+                    <label class="form-check-label" for="paypal">PayPal</label>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="upi" checked>
+                    <label class="form-check-label" for="upi">UPI Payments</label>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="netBanking" checked>
+                    <label class="form-check-label" for="netBanking">Net Banking</label>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="cod">
+                    <label class="form-check-label" for="cod">Cash on Delivery</label>
+                  </div>
+                  
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="applePay">
+                    <label class="form-check-label" for="applePay">Apple Pay</label>
+                  </div>
+                </div>
+                
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Payment Security</h3>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="sslEnabled" checked>
+                    <label class="form-check-label" for="sslEnabled">Enable SSL Encryption</label>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="fraudDetection" checked>
+                    <label class="form-check-label" for="fraudDetection">Enable Fraud Detection</label>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="paymentTimeout" class="form-label">Payment Timeout (minutes)</label>
+                    <input type="number" class="form-control" id="paymentTimeout" value="30" min="5" max="120">
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-lg-6">
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Payment Gateway Settings</h3>
+                  
+                  <div class="mb-4">
+                    <label for="gatewayProvider" class="form-label">Primary Gateway Provider</label>
+                    <select class="form-select" id="gatewayProvider">
+                      <option value="razorpay" selected>Razorpay</option>
+                      <option value="stripe">Stripe</option>
+                      <option value="paypal">PayPal</option>
+                      <option value="authorize">Authorize.net</option>
+                    </select>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="apiKey" class="form-label">API Key</label>
+                    <input type="password" class="form-control" id="apiKey" value="••••••••••••••••">
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="apiSecret" class="form-label">API Secret</label>
+                    <input type="password" class="form-control" id="apiSecret" value="••••••••••••••••">
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="testMode" checked>
+                    <label class="form-check-label" for="testMode">Test Mode</label>
+                  </div>
+                  
+                  <button class="btn btn-outline-primary">
+                    <i class="bi bi-plug me-1"></i> Connect Gateway
+                  </button>
+                </div>
+                
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Tax Settings</h3>
+                  
+                  <div class="mb-4">
+                    <label for="taxRate" class="form-label">Tax Rate (%)</label>
+                    <input type="number" class="form-control" id="taxRate" value="18" min="0" max="50" step="0.1">
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="taxInclusive" checked>
+                    <label class="form-check-label" for="taxInclusive">Prices Include Tax</label>
+                  </div>
+                  
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="digitalTax" checked>
+                    <label class="form-check-label" for="digitalTax">Apply Tax to Digital Products</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Shipping Settings -->
+          <div class="tab-pane fade" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Shipping Methods</h3>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="standardShipping" checked>
+                    <label class="form-check-label" for="standardShipping">Standard Shipping (3-5 days)</label>
+                    <div class="text-muted small">₹50 for orders under ₹5000, Free above ₹5000</div>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="expressShipping" checked>
+                    <label class="form-check-label" for="expressShipping">Express Shipping (1-2 days)</label>
+                    <div class="text-muted small">₹200 for all orders</div>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="overnightShipping">
+                    <label class="form-check-label" for="overnightShipping">Overnight Shipping</label>
+                    <div class="text-muted small">₹500 for all orders</div>
+                  </div>
+                  
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="internationalShipping">
+                    <label class="form-check-label" for="internationalShipping">International Shipping</label>
+                    <div class="text-muted small">Calculated at checkout</div>
+                  </div>
+                </div>
+                
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Shipping Zones</h3>
+                  
+                  <div class="mb-4">
+                    <label for="domesticZone" class="form-label">Domestic Shipping Zone</label>
+                    <select class="form-select" id="domesticZone">
+                      <option value="all" selected>All India</option>
+                      <option value="north">North India</option>
+                      <option value="south">South India</option>
+                      <option value="east">East India</option>
+                      <option value="west">West India</option>
+                    </select>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="internationalZone" class="form-label">International Shipping Zones</label>
+                    <select class="form-select" id="internationalZone" multiple>
+                      <option value="us">United States</option>
+                      <option value="uk">United Kingdom</option>
+                      <option value="ca">Canada</option>
+                      <option value="au">Australia</option>
+                      <option value="uae">UAE</option>
+                      <option value="sg">Singapore</option>
+                    </select>
+                    <div class="form-text">Hold Ctrl/Cmd to select multiple options</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-lg-6">
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Shipping Providers</h3>
+                  
+                  <div class="integration-card d-flex align-items-center">
+                    <div class="integration-logo">
+                      <i class="bi bi-truck"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">Blue Dart</h6>
+                      <p class="mb-0 text-muted">Integrated with tracking</p>
+                    </div>
+                    <div class="status-badge active">Active</div>
+                  </div>
+                  
+                  <div class="integration-card d-flex align-items-center">
+                    <div class="integration-logo">
+                      <i class="bi bi-truck"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">Delhivery</h6>
+                      <p class="mb-0 text-muted">Ready to connect</p>
+                    </div>
+                    <div class="status-badge inactive">Inactive</div>
+                  </div>
+                  
+                  <div class="integration-card d-flex align-items-center">
+                    <div class="integration-logo">
+                      <i class="bi bi-truck"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">DTDC</h6>
+                      <p class="mb-0 text-muted">Ready to connect</p>
+                    </div>
+                    <div class="status-badge inactive">Inactive</div>
+                  </div>
+                  
+                  <button class="btn btn-outline-primary mt-3">
+                    <i class="bi bi-plus-circle me-1"></i> Add Shipping Provider
+                  </button>
+                </div>
+                
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Packaging Settings</h3>
+                  
+                  <div class="mb-4">
+                    <label for="packageWeight" class="form-label">Default Package Weight (kg)</label>
+                    <input type="number" class="form-control" id="packageWeight" value="0.5" min="0.1" max="10" step="0.1">
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="packageDimensions" class="form-label">Default Package Dimensions (cm)</label>
+                    <div class="row">
+                      <div class="col-4">
+                        <input type="number" class="form-control" placeholder="Length" value="20">
+                      </div>
+                      <div class="col-4">
+                        <input type="number" class="form-control" placeholder="Width" value="15">
+                      </div>
+                      <div class="col-4">
+                        <input type="number" class="form-control" placeholder="Height" value="10">
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="signatureRequired" checked>
+                    <label class="form-check-label" for="signatureRequired">Signature Required for Delivery</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Notifications Settings -->
+          <div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Email Notifications</h3>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="orderConfirmations" checked>
+                    <label class="form-check-label" for="orderConfirmations">Order Confirmations</label>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="shippingNotifications" checked>
+                    <label class="form-check-label" for="shippingNotifications">Shipping Notifications</label>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="backInStock" checked>
+                    <label class="form-check-label" for="backInStock">Back in Stock Alerts</label>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="promotionalEmails">
+                    <label class="form-check-label" for="promotionalEmails">Promotional Emails</label>
+                  </div>
+                  
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="abandonedCart" checked>
+                    <label class="form-check-label" for="abandonedCart">Abandoned Cart Reminders</label>
+                  </div>
+                </div>
+                
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Admin Notifications</h3>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="newOrderAlerts" checked>
+                    <label class="form-check-label" for="newOrderAlerts">New Order Alerts</label>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="lowStockAlerts" checked>
+                    <label class="form-check-label" for="lowStockAlerts">Low Stock Alerts</label>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="refundRequests" checked>
+                    <label class="form-check-label" for="refundRequests">Refund Requests</label>
+                  </div>
+                  
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="systemAlerts" checked>
+                    <label class="form-check-label" for="systemAlerts">System Alerts</label>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-lg-6">
+                <div class="settings-card">
+                  <h3 class="settings-section-title">SMS Notifications</h3>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="smsOrderConfirmations" checked>
+                    <label class="form-check-label" for="smsOrderConfirmations">Order Confirmations</label>
+                  </div>
+                  
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="smsShippingUpdates" checked>
+                    <label class="form-check-label" for="smsShippingUpdates">Shipping Updates</label>
+                  </div>
+                  
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="smsPromotions">
+                    <label class="form-check-label" for="smsPromotions">Promotional Messages</label>
+                  </div>
+                  
+                  <div class="mt-4">
+                    <label for="smsSenderId" class="form-label">SMS Sender ID</label>
+                    <input type="text" class="form-control" id="smsSenderId" value="APLRESELLER">
+                  </div>
+                </div>
+                
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Notification Templates</h3>
+                  
+                  <div class="mb-4">
+                    <label for="emailTemplate" class="form-label">Email Template</label>
+                    <select class="form-select" id="emailTemplate">
+                      <option value="default" selected>Default Template</option>
+                      <option value="minimal">Minimal Template</option>
+                      <option value="premium">Premium Template</option>
+                    </select>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="senderName" class="form-label">Sender Name</label>
+                    <input type="text" class="form-control" id="senderName" value="Apple Premium Reseller">
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="senderEmail" class="form-label">Sender Email</label>
+                    <input type="email" class="form-control" id="senderEmail" value="noreply@applereseller.in">
+                  </div>
+                  
+                  <button class="btn btn-outline-primary">
+                    <i class="bi bi-pencil me-1"></i> Customize Templates
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Integrations Settings -->
+          <div class="tab-pane fade" id="integrations" role="tabpanel" aria-labelledby="integrations-tab">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Analytics & Tracking</h3>
+                  
+                  <div class="integration-card d-flex align-items-center">
+                    <div class="integration-logo">
+                      <i class="bi bi-graph-up"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">Google Analytics</h6>
+                      <p class="mb-0 text-muted">Track store performance</p>
+                    </div>
+                    <div class="status-badge active">Connected</div>
+                  </div>
+                  
+                  <div class="integration-card d-flex align-items-center">
+                    <div class="integration-logo">
+                      <i class="bi bi-facebook"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">Facebook Pixel</h6>
+                      <p class="mb-0 text-muted">Track conversions</p>
+                    </div>
+                    <div class="status-badge active">Connected</div>
+                  </div>
+                  
+                  <div class="integration-card d-flex align-items-center">
+                    <div class="integration-logo">
+                      <i class="bi bi-google"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">Google Ads</h6>
+                      <p class="mb-0 text-muted">Track ad performance</p>
+                    </div>
+                    <div class="status-badge inactive">Not Connected</div>
+                  </div>
+                  
+                  <button class="btn btn-outline-primary mt-3">
+                    <i class="bi bi-plus-circle me-1"></i> Add Analytics Service
+                  </button>
+                </div>
+                
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Marketing Tools</h3>
+                  
+                  <div class="integration-card d-flex align-items-center">
+                    <div class="integration-logo">
+                      <i class="bi bi-envelope"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">Mailchimp</h6>
+                      <p class="mb-0 text-muted">Email marketing</p>
+                    </div>
+                    <div class="status-badge active">Connected</div>
+                  </div>
+                  
+                  <div class="integration-card d-flex align-items-center">
+                    <div class="integration-logo">
+                      <i class="bi bi-chat-dots"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">Intercom</h6>
+                      <p class="mb-0 text-muted">Customer messaging</p>
+                    </div>
+                    <div class="status-badge inactive">Not Connected</div>
+                  </div>
+                  
+                  <div class="integration-card d-flex align-items-center">
+                    <div class="integration-logo">
+                      <i class="bi bi-star"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">Yotpo</h6>
+                      <p class="mb-0 text-muted">Reviews and ratings</p>
+                    </div>
+                    <div class="status-badge inactive">Not Connected</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-lg-6">
+                <div class="settings-card">
+                  <h3 class="settings-section-title">Accounting & ERP</h3>
+                  
+                  <div class="integration-card d-flex align-items-center">
+                    <div class="integration-logo">
+                      <i class="bi bi-calculator"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">QuickBooks</h6>
+                      <p class="mb-0 text-muted">Accounting software</p>
+                    </div>
+                    <div class="status-badge active">Connected</div>
+                  </div>
+                  
+                  <div class="integration-card d-flex align-items-center">
+                    <div class="integration-logo">
+                      <i class="bi bi-file-bar-graph"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">Xero</h6>
+                      <p class="mb-0 text-muted">Cloud accounting</p>
+                    </div>
+                    <div class="status-badge inactive">Not Connected</div>
+                  </div>
+                  
+                  <div class="integration-card d-flex align-items-center">
+                    <div class="integration-logo">
+                      <i class="bi bi-boxes"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">SAP Business One</h6>
+                      <p class="mb-0 text-muted">ERP integration</p>
+                    </div>
+                    <div class="status-badge inactive">Not Connected</div>
+                  </div>
+                </div>
+                
+                <div class="settings-card">
+                  <h3 class="settings-section-title">API Configuration</h3>
+                  
+                  <div class="mb-4">
+                    <label for="apiBaseUrl" class="form-label">API Base URL</label>
+                    <input type="text" class="form-control" id="apiBaseUrl" value="https://api.applereseller.in/v1">
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="apiKey" class="form-label">API Key</label>
+                    <div class="input-group">
+                      <input type="password" class="form-control" id="apiKey" value="sk_live_51JkL9RSGq8p7X9cP">
+                      <button class="btn btn-outline-secondary" type="button" onclick="toggleApiKey()">
+                        <i class="bi bi-eye"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="webhookUrl" class="form-label">Webhook URL</label>
+                    <input type="text" class="form-control" id="webhookUrl" value="https://webhook.applereseller.in">
+                  </div>
+                  
+                  <button class="btn btn-outline-danger">
+                    <i class="bi bi-arrow-clockwise me-1"></i> Regenerate API Key
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Function to preview logo when uploaded
+    function previewLogo(event) {
+      const reader = new FileReader();
+      reader.onload = function() {
+        const output = document.getElementById('logoPreview');
+        output.src = reader.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+    
+    // Function to toggle API key visibility
+    function toggleApiKey() {
+      const apiKeyInput = document.getElementById('apiKey');
+      const toggleButton = event.currentTarget;
+      
+      if (apiKeyInput.type === 'password') {
+        apiKeyInput.type = 'text';
+        toggleButton.innerHTML = '<i class="bi bi-eye-slash"></i>';
+      } else {
+        apiKeyInput.type = 'password';
+        toggleButton.innerHTML = '<i class="bi bi-eye"></i>';
+      }
+    }
+    
+    // Function to save settings (placeholder)
+    function saveSettings() {
+      // Show saving indicator
+      const saveButton = document.querySelector('.btn-primary');
+      const originalText = saveButton.innerHTML;
+      saveButton.innerHTML = '<i class="bi bi-arrow-repeat spinner"></i> Saving...';
+      saveButton.disabled = true;
+      
+      // Simulate API call
+      setTimeout(() => {
+        // Show success message
+        alert('Settings saved successfully!');
+        
+        // Reset button
+        saveButton.innerHTML = originalText;
+        saveButton.disabled = false;
+      }, 1500);
+    }
+    
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    });
+  </script>
+</body>
+</html>

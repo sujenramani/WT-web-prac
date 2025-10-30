@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your Saves - Apple Store</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <!-- Custom CSS -->
+  <style>
+    /* Reuse your existing styles */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      background-color: #f6f6f8;
+      color: #1d1d1f;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 600;
+    }
+    
+    .navbar {
+      background-color: #f6f6f8;
+    }
+    
+    .navbar-brand, .nav-link {
+      color: #060606 !important;
+    }
+    
+    .btn-checkout {
+      background: linear-gradient(45deg, #060606, #0c0c0c);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 12px 30px;
+      font-weight: 600;
+    }
+    
+    .btn-checkout:hover {
+      background: linear-gradient(45deg, #fb15bd, #ff310d);
+    }
+    
+    .product-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+      overflow: hidden;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .product-card img {
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+    
+    /* Wishlist specific styles */
+    .wishlist-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .wishlist-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .wishlist-title {
+      font-size: 2rem;
+      font-weight: 600;
+    }
+    
+    .wishlist-count {
+      color: #6e6e73;
+      font-size: 1rem;
+    }
+    
+    .wishlist-empty {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    
+    .wishlist-empty-icon {
+      font-size: 4rem;
+      color: #d2d2d7;
+      margin-bottom: 20px;
+    }
+    
+    .wishlist-empty h3 {
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    
+    .wishlist-empty p {
+      color: #6e6e73;
+      max-width: 500px;
+      margin: 0 auto 30px;
+    }
+    
+    .wishlist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 25px;
+    }
+    
+    .wishlist-item {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+    
+    .wishlist-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .wishlist-item-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    
+    .wishlist-item-details {
+      padding: 20px;
+    }
+    
+    .wishlist-item-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+    
+    .wishlist-item-description {
+      color: #6e6e73;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+    
+    .wishlist-item-price {
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+    }
+    
+    .wishlist-item-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .btn-wishlist {
+      flex: 1;
+      border: 1px solid #d2d2d7;
+      border-radius: 25px;
+      padding: 10px 15px;
+      background: white;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    
+    .btn-wishlist.primary {
+      background: #0071e3;
+      color: white;
+      border-color: #0071e3;
+    }
+    
+    .btn-wishlist.primary:hover {
+      background: #0056b3;
+    }
+    
+    .btn-wishlist.secondary:hover {
+      background: #f5f5f7;
+    }
+    
+    .remove-wishlist {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: none;
+    }
+    
+    .remove-wishlist:hover {
+      background: white;
+    }
+    
+    .wishlist-filters {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+      border: 1px solid #d2d2d7;
+      border-radius: 20px;
+      padding: 8px 16px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .filter-btn.active {
+      background: #0071e3;
+      color: white;
+      border-color: #0071e3;
+    }
+    
+    .filter-btn:hover:not(.active) {
+      background: #f5f5f7;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .wishlist-container {
+        padding: 10px;
+      }
+      
+      .wishlist-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .wishlist-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+      }
+      
+      .wishlist-item-actions {
+        flex-direction: column;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .wishlist-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+     /* Footer text and link color fix */
+footer, footer a {
+  color: #3a3a3a !important;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+  color: #000;
+}
+
+ /* Apple-style shop button */
+    .shop-btn {
+      display: inline-block;
+      background-color: #0707078e;  /* Apple blue */
+      color: #fff;
+      font-weight: 500;
+      border: none;
+      border-radius: 25px;
+      padding: 8px 20px;
+      margin-top: 10px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .shop-btn:hover {
+      background-color: #060606;
+      color: #fff;
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Navigation (same as your main page) -->
+  <nav class="navbar navbar-expand-lg navbar">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="Black-Apple-Logo-PNG-Photos.png" alt="Logo" width="25" height="25">
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <button class="btn" data-bs-toggle="modal" data-bs-target="#checkoutModal1">
+                <i class="bi bi-search"></i>
+              </button>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <button class="btn" data-bs-toggle="modal" data-bs-target="#checkoutModal2">
+                <i class="bi bi-bag-check-fill" style="font-size:20px; color:#000;"></i>
+              </button>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <button class="btn" data-bs-toggle="modal" data-bs-target="#checkoutModal3">
+                <i class="bi bi-list" style="font-size:20px; color:#000;"></i>
+              </button>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Wishlist Page Content -->
+  <div class="wishlist-container">
+    <div class="wishlist-header">
+      <div>
+        <h1 class="wishlist-title">Your Saves</h1>
+        <div class="wishlist-count" id="wishlist-count">4 items</div>
+      </div>
+      
+      <div class="wishlist-filters">
+        <button class="filter-btn active" data-filter="all">All Items</button>
+        <button class="filter-btn" data-filter="iphone">iPhone</button>
+        <button class="filter-btn" data-filter="mac">Mac</button>
+        <button class="filter-btn" data-filter="ipad">iPad</button>
+        <button class="filter-btn" data-filter="watch">Watch</button>
+      </div>
+    </div>
+    
+    <!-- Wishlist Items Grid -->
+    <div class="wishlist-grid" id="wishlist-grid">
+      <!-- Wishlist Item 1 -->
+      <div class="wishlist-item" data-category="iphone">
+        <img src="store-card-40-iphone-17-pro-202509.jpeg" class="wishlist-item-image" alt="iPhone 17 Pro">
+        <button class="remove-wishlist" data-id="1">
+          <i class="bi bi-heart-fill" style="color: #ff3b30;"></i>
+        </button>
+        <div class="wishlist-item-details">
+          <div class="wishlist-item-name">iPhone 17 Pro</div>
+          <div class="wishlist-item-description">Natural Titanium, 256GB</div>
+          <div class="wishlist-item-price">₹1,34,900.00</div>
+          <div class="wishlist-item-actions">
+            <button class="btn-wishlist primary add-to-cart" data-id="1">Add to Bag</button>
+            <button class="btn-wishlist secondary">View Details</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Wishlist Item 2 -->
+      <div class="wishlist-item" data-category="mac">
+        <img src="store-card-40-macbook-pro-202510.jpeg" class="wishlist-item-image" alt="MacBook Pro">
+        <button class="remove-wishlist" data-id="2">
+          <i class="bi bi-heart-fill" style="color: #ff3b30;"></i>
+        </button>
+        <div class="wishlist-item-details">
+          <div class="wishlist-item-name">MacBook Pro 14"</div>
+          <div class="wishlist-item-description">M5 chip, 16GB RAM, 1TB SSD</div>
+          <div class="wishlist-item-price">₹2,39,900.00</div>
+          <div class="wishlist-item-actions">
+            <button class="btn-wishlist primary add-to-cart" data-id="2">Add to Bag</button>
+            <button class="btn-wishlist secondary">View Details</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Wishlist Item 3 -->
+      <div class="wishlist-item" data-category="ipad">
+        <img src="store-card-40-ipad-pro-202510.jpeg" class="wishlist-item-image" alt="iPad Pro">
+        <button class="remove-wishlist" data-id="3">
+          <i class="bi bi-heart-fill" style="color: #ff3b30;"></i>
+        </button>
+        <div class="wishlist-item-details">
+          <div class="wishlist-item-name">iPad Pro</div>
+          <div class="wishlist-item-description">12.9-inch, 1TB, Wi-Fi + Cellular</div>
+          <div class="wishlist-item-price">₹1,89,900.00</div>
+          <div class="wishlist-item-actions">
+            <button class="btn-wishlist primary add-to-cart" data-id="3">Add to Bag</button>
+            <button class="btn-wishlist secondary">View Details</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Wishlist Item 4 -->
+      <div class="wishlist-item" data-category="watch">
+        <img src="store-card-40-watch-ultra-202509_GEO_IN.jpeg" class="wishlist-item-image" alt="Apple Watch Ultra">
+        <button class="remove-wishlist" data-id="4">
+          <i class="bi bi-heart-fill" style="color: #ff3b30;"></i>
+        </button>
+        <div class="wishlist-item-details">
+          <div class="wishlist-item-name">Apple Watch Ultra 3</div>
+          <div class="wishlist-item-description">Titanium Case, Ocean Band</div>
+          <div class="wishlist-item-price">₹89,900.00</div>
+          <div class="wishlist-item-actions">
+            <button class="btn-wishlist primary add-to-cart" data-id="4">Add to Bag</button>
+            <button class="btn-wishlist secondary">View Details</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Empty Wishlist State (hidden by default) -->
+    <div class="wishlist-empty" id="empty-wishlist" style="display: none;">
+      <div class="wishlist-empty-icon">
+        <i class="bi bi-heart"></i>
+      </div>
+      <h3>Your wishlist is empty</h3>
+      <p>Browse our products and tap the heart icon to save items you're interested in. They'll appear here for easy access later.</p>
+      <button class="btn-checkout" id="browse-products">Browse Products</button>
+    </div>
+  </div>
+
+  <!-- Footer (same as your main page) -->
+  <footer class="footer mt-5">
+    <div class="container">
+      <div class="text-start mb-4">
+        <p class="mb-1"><img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" width="15"> &nbsp; > &nbsp; Your Saves</p>
+      </div>
+
+      <div class="row footer-section">
+        <div class="col-6 col-md-2">
+          <h6>Shop and Learn</h6>
+          <ul>
+            <li><a href="#">Store</a></li>
+            <li><a href="#">Mac</a></li>
+            <li><a href="#">iPad</a></li>
+            <li><a href="#">iPhone</a></li>
+            <li><a href="#">Watch</a></li>
+            <li><a href="#">AirPods</a></li>
+            <li><a href="#">TV & Home</a></li>
+            <li><a href="#">AirTag</a></li>
+            <li><a href="#">Accessories</a></li>
+            <li><a href="#">Gift Cards</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <h6>Account</h6>
+          <ul>
+            <li><a href="#">Manage Your Apple Account</a></li>
+            <li><a href="#">Apple Store Account</a></li>
+            <li><a href="#">iCloud.com</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <h6>Apple Store</h6>
+          <ul>
+            <li><a href="#">Find a Store</a></li>
+            <li><a href="#">Genius Bar</a></li>
+            <li><a href="#">Today at Apple</a></li>
+            <li><a href="#">Ways to Buy</a></li>
+            <li><a href="#">Apple Trade In</a></li>
+            <li><a href="#">Recycling Programme</a></li>
+            <li><a href="#">Order Status</a></li>
+            <li><a href="#">Shopping Help</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <h6>About Apple</h6>
+          <ul>
+            <li><a href="#">Newsroom</a></li>
+            <li><a href="#">Apple Leadership</a></li>
+            <li><a href="#">Career Opportunities</a></li>
+            <li><a href="#">Investors</a></li>
+            <li><a href="#">Ethics & Compliance</a></li>
+            <li><a href="#">Contact Apple</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="more-ways">
+        More ways to shop: <a href="#">Find an Apple Store</a> or <a href="#">other retailer</a> near you. Or call 000800 040 1966.
+      </div>
+
+      <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between">
+        <div>Copyright © 2025 Apple Inc. All rights reserved.</div>
+        <div>
+          <a href="#">Privacy Policy</a> |
+          <a href="#">Terms of Use</a> |
+          <a href="#">Sales Policy</a> |
+          <a href="#">Legal</a> |
+          <a href="#">Site Map</a>
+        </div>
+        <div>India</div>
+      </div>
+    </div>
+  </footer>
+
+<div class="text-center mb-4">
+    <a href="index.html" class="shop-btn" style="background-color:#050505cd;">BACK</a>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Wishlist JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Elements
+      const wishlistGrid = document.getElementById('wishlist-grid');
+      const emptyWishlist = document.getElementById('empty-wishlist');
+      const wishlistCount = document.getElementById('wishlist-count');
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      const removeButtons = document.querySelectorAll('.remove-wishlist');
+      const addToCartButtons = document.querySelectorAll('.add-to-cart');
+      const browseProductsBtn = document.getElementById('browse-products');
+      
+      // Initialize wishlist count
+      updateWishlistCount();
+      
+      // Filter functionality
+      filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const filter = this.getAttribute('data-filter');
+          
+          // Update active filter button
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          this.classList.add('active');
+          
+          // Filter items
+          const items = wishlistGrid.querySelectorAll('.wishlist-item');
+          items.forEach(item => {
+            if (filter === 'all' || item.getAttribute('data-category') === filter) {
+              item.style.display = 'block';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+        });
+      });
+      
+      // Remove item from wishlist
+      removeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const itemId = this.getAttribute('data-id');
+          const item = this.closest('.wishlist-item');
+          
+          // Animation for removal
+          item.style.transform = 'scale(0.9)';
+          item.style.opacity = '0.5';
+          
+          setTimeout(() => {
+            item.remove();
+            updateWishlistCount();
+            checkEmptyWishlist();
+          }, 300);
+        });
+      });
+      
+      // Add to cart from wishlist
+      addToCartButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const itemId = this.getAttribute('data-id');
+          
+          // Show confirmation
+          const originalText = this.textContent;
+          this.textContent = 'Added to Bag!';
+          this.style.backgroundColor = '#34c759';
+          
+          setTimeout(() => {
+            this.textContent = originalText;
+            this.style.backgroundColor = '';
+          }, 2000);
+          
+          // In a real implementation, you would add the item to the cart
+          console.log(`Added item ${itemId} to cart`);
+        });
+      });
+      
+      // Browse products button
+      browseProductsBtn.addEventListener('click', function() {
+        // In a real implementation, redirect to products page
+        alert('Redirecting to products page...');
+      });
+      
+      // Update wishlist count
+      function updateWishlistCount() {
+        const itemCount = wishlistGrid.querySelectorAll('.wishlist-item').length;
+        wishlistCount.textContent = `${itemCount} ${itemCount === 1 ? 'item' : 'items'}`;
+      }
+      
+      // Check if wishlist is empty
+      function checkEmptyWishlist() {
+        const itemCount = wishlistGrid.querySelectorAll('.wishlist-item').length;
+        
+        if (itemCount === 0) {
+          wishlistGrid.style.display = 'none';
+          emptyWishlist.style.display = 'block';
+        } else {
+          wishlistGrid.style.display = 'grid';
+          emptyWishlist.style.display = 'none';
+        }
+      }
+      
+      // Initialize empty state check
+      checkEmptyWishlist();
+    });
+  </script>
+</body>
+</html>

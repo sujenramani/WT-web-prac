@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Management - Apple Store Admin</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <style>
+    :root {
+      --apple-blue: #0071e3;
+      --apple-light-gray: #f5f5f7;
+      --apple-dark-gray: #1d1d1f;
+      --apple-border: #d2d2d7;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      background-color: var(--apple-light-gray);
+      color: var(--apple-dark-gray);
+    }
+    
+    .admin-header {
+      background-color: white;
+      border-bottom: 1px solid var(--apple-border);
+      padding: 15px 0;
+    }
+    
+    .admin-sidebar {
+      background-color: white;
+      min-height: calc(100vh - 80px);
+      border-right: 1px solid var(--apple-border);
+      padding: 20px 0;
+    }
+    
+    .admin-sidebar .nav-link {
+      color: var(--apple-dark-gray);
+      padding: 12px 20px;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+    }
+    
+    .admin-sidebar .nav-link i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+    
+    .admin-sidebar .nav-link.active {
+      background-color: var(--apple-blue);
+      color: white;
+    }
+    
+    .admin-sidebar .nav-link:hover:not(.active) {
+      background-color: rgba(0, 113, 227, 0.1);
+    }
+    
+    .admin-content {
+      padding: 30px;
+    }
+    
+    .stats-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 20px;
+      transition: transform 0.3s;
+    }
+    
+    .stats-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .stats-card .number {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .stats-card .label {
+      color: #86868b;
+      font-size: 0.9rem;
+    }
+    
+    .stats-card .trend {
+      font-size: 0.8rem;
+      margin-top: 5px;
+    }
+    
+    .stats-card .trend.up {
+      color: #34c759;
+    }
+    
+    .stats-card .trend.down {
+      color: #ff3b30;
+    }
+    
+    .table-container {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .admin-table th {
+      border-top: none;
+      font-weight: 600;
+      color: #86868b;
+      font-size: 0.9rem;
+    }
+    
+    .badge-active {
+      background-color: #34c759;
+      color: white;
+    }
+    
+    .badge-inactive {
+      background-color: #ff3b30;
+      color: white;
+    }
+    
+    .badge-premium {
+      background-color: #ffcc00;
+      color: var(--apple-dark-gray);
+    }
+    
+    .badge-new {
+      background-color: #0071e3;
+      color: white;
+    }
+    
+    .customer-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #f2f2f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: var(--apple-dark-gray);
+      font-size: 1.2rem;
+    }
+    
+    .customer-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    .action-btn {
+      background: none;
+      border: none;
+      color: var(--apple-blue);
+      font-size: 0.9rem;
+      cursor: pointer;
+      padding: 0 5px;
+    }
+    
+    .action-btn:hover {
+      text-decoration: underline;
+    }
+    
+    .action-btn.delete {
+      color: #ff3b30;
+    }
+    
+    .chart-container {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 20px;
+    }
+    
+    .search-box {
+      position: relative;
+    }
+    
+    .search-box input {
+      padding-left: 40px;
+    }
+    
+    .search-box .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #86868b;
+    }
+    
+    .filter-dropdown {
+      margin-right: 10px;
+    }
+    
+    .customer-detail-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #f2f2f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: var(--apple-dark-gray);
+      font-size: 2rem;
+      margin: 0 auto 20px;
+    }
+    
+    .customer-detail-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    .order-history-image {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    
+    @media (max-width: 768px) {
+      .admin-sidebar {
+        min-height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--apple-border);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <a href="index.html" class="d-flex align-items-center text-decoration-none">
+            <img src="Black-Apple-Logo-PNG-Photos.png" alt="Apple Logo" width="25" height="25" class="me-2">
+            <span class="fw-bold" style="color: var(--apple-dark-gray);">Store Admin</span>
+          </a>
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="dropdown">
+            <button class="btn btn-link text-decoration-none dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="color: var(--apple-dark-gray);">
+              <i class="bi bi-person-circle me-1"></i> Admin User
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="userDropdown">
+              <li><a class="dropdown-item" href="profile.html"><i class="bi bi-person me-2"></i>Profile</a></li>
+              <li><a class="dropdown-item" href="settings.html"><i class="bi bi-gear me-2"></i>Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="index.html"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-3 col-lg-2 admin-sidebar">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="account.html">
+              <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="products.html">
+              <i class="bi bi-box-seam"></i> Products
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="orders.html">
+              <i class="bi bi-cart-check"></i> Orders
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="customers.html">
+              <i class="bi bi-people"></i> Customers
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="inventory.html">
+              <i class="bi bi-clipboard-data"></i> Inventory
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="analytics.html">
+              <i class="bi bi-graph-up"></i> Analytics
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="settings.html">
+              <i class="bi bi-gear"></i> Settings
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-md-9 col-lg-10 admin-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1 class="h3 mb-0">Customer Management</h1>
+          <div class="d-flex">
+            <button class="btn btn-sm btn-outline-secondary me-2">
+              <i class="bi bi-download me-1"></i> Export
+            </button>
+            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+              <i class="bi bi-plus-circle me-1"></i> Add Customer
+            </button>
+          </div>
+        </div>
+
+        <!-- Customer Stats -->
+        <div class="row mb-4">
+          <div class="col-md-3">
+            <div class="stats-card">
+              <div class="number">89</div>
+              <div class="label">Total Customers</div>
+              <div class="trend up">
+                <i class="bi bi-arrow-up-right"></i> 5.7% from last month
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stats-card">
+              <div class="number">12</div>
+              <div class="label">New Customers</div>
+              <div class="trend up">
+                <i class="bi bi-arrow-up-right"></i> 3 this month
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stats-card">
+              <div class="number">₹2,84,750</div>
+              <div class="label">Total Customer Value</div>
+              <div class="trend up">
+                <i class="bi bi-arrow-up-right"></i> 12.5% from last month
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stats-card">
+              <div class="number">₹21,450</div>
+              <div class="label">Avg. Customer Value</div>
+              <div class="trend down">
+                <i class="bi bi-arrow-down-right"></i> 2.1% from last month
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="table-container mb-4">
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <div class="search-box">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" class="form-control" placeholder="Search customers by name, email, or phone...">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="d-flex">
+                <div class="dropdown filter-dropdown">
+                  <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="statusFilter" data-bs-toggle="dropdown" aria-expanded="false">
+                    Status
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="statusFilter">
+                    <li><a class="dropdown-item" href="#">All Status</a></li>
+                    <li><a class="dropdown-item" href="#">Active</a></li>
+                    <li><a class="dropdown-item" href="#">Inactive</a></li>
+                    <li><a class="dropdown-item" href="#">New</a></li>
+                    <li><a class="dropdown-item" href="#">Premium</a></li>
+                  </ul>
+                </div>
+                <div class="dropdown filter-dropdown">
+                  <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="locationFilter" data-bs-toggle="dropdown" aria-expanded="false">
+                    Location
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="locationFilter">
+                    <li><a class="dropdown-item" href="#">All Locations</a></li>
+                    <li><a class="dropdown-item" href="#">Bangalore</a></li>
+                    <li><a class="dropdown-item" href="#">Mumbai</a></li>
+                    <li><a class="dropdown-item" href="#">Delhi</a></li>
+                    <li><a class="dropdown-item" href="#">Chennai</a></li>
+                    <li><a class="dropdown-item" href="#">Hyderabad</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customers Table -->
+        <div class="table-container">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">All Customers</h5>
+            <div class="text-muted">Showing 1-10 of 89 customers</div>
+          </div>
+          <div class="table-responsive">
+            <table class="table admin-table">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Phone</th>
+                  <th>Location</th>
+                  <th>Orders</th>
+                  <th>Total Spent</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="customer-avatar me-3">RS</div>
+                      <div>
+                        <div class="fw-semibold">Rahul Sharma</div>
+                        <div class="text-muted small">rahul.sharma@example.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>+91 98765 43210</td>
+                  <td>Bangalore</td>
+                  <td>8</td>
+                  <td>₹2,84,750</td>
+                  <td><span class="badge badge-premium">Premium</span></td>
+                  <td>
+                    <button class="action-btn" data-bs-toggle="modal" data-bs-target="#customerDetailModal"><i class="bi bi-eye"></i> View</button>
+                    <button class="action-btn"><i class="bi bi-pencil"></i> Edit</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="customer-avatar me-3">PP</div>
+                      <div>
+                        <div class="fw-semibold">Priya Patel</div>
+                        <div class="text-muted small">priya.patel@example.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>+91 98765 43211</td>
+                  <td>Mumbai</td>
+                  <td>5</td>
+                  <td>₹1,59,900</td>
+                  <td><span class="badge badge-active">Active</span></td>
+                  <td>
+                    <button class="action-btn" data-bs-toggle="modal" data-bs-target="#customerDetailModal"><i class="bi bi-eye"></i> View</button>
+                    <button class="action-btn"><i class="bi bi-pencil"></i> Edit</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="customer-avatar me-3">AK</div>
+                      <div>
+                        <div class="fw-semibold">Anil Kumar</div>
+                        <div class="text-muted small">anil.kumar@example.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>+91 98765 43212</td>
+                  <td>Delhi</td>
+                  <td>3</td>
+                  <td>₹2,19,900</td>
+                  <td><span class="badge badge-active">Active</span></td>
+                  <td>
+                    <button class="action-btn" data-bs-toggle="modal" data-bs-target="#customerDetailModal"><i class="bi bi-eye"></i> View</button>
+                    <button class="action-btn"><i class="bi bi-pencil"></i> Edit</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="customer-avatar me-3">MS</div>
+                      <div>
+                        <div class="fw-semibold">Meera Singh</div>
+                        <div class="text-muted small">meera.singh@example.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>+91 98765 43213</td>
+                  <td>Chennai</td>
+                  <td>2</td>
+                  <td>₹89,900</td>
+                  <td><span class="badge badge-active">Active</span></td>
+                  <td>
+                    <button class="action-btn" data-bs-toggle="modal" data-bs-target="#customerDetailModal"><i class="bi bi-eye"></i> View</button>
+                    <button class="action-btn"><i class="bi bi-pencil"></i> Edit</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="customer-avatar me-3">VJ</div>
+                      <div>
+                        <div class="fw-semibold">Vikram Joshi</div>
+                        <div class="text-muted small">vikram.joshi@example.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>+91 98765 43214</td>
+                  <td>Hyderabad</td>
+                  <td>1</td>
+                  <td>₹97,900</td>
+                  <td><span class="badge badge-new">New</span></td>
+                  <td>
+                    <button class="action-btn" data-bs-toggle="modal" data-bs-target="#customerDetailModal"><i class="bi bi-eye"></i> View</button>
+                    <button class="action-btn"><i class="bi bi-pencil"></i> Edit</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="customer-avatar me-3">SG</div>
+                      <div>
+                        <div class="fw-semibold">Sanjay Gupta</div>
+                        <div class="text-muted small">sanjay.gupta@example.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>+91 98765 43215</td>
+                  <td>Bangalore</td>
+                  <td>4</td>
+                  <td>₹1,49,900</td>
+                  <td><span class="badge badge-inactive">Inactive</span></td>
+                  <td>
+                    <button class="action-btn" data-bs-toggle="modal" data-bs-target="#customerDetailModal"><i class="bi bi-eye"></i> View</button>
+                    <button class="action-btn"><i class="bi bi-pencil"></i> Edit</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Pagination -->
+          <nav aria-label="Customer pagination">
+            <ul class="pagination justify-content-center mt-4">
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item"><a class="page-link" href="#">4</a></li>
+              <li class="page-item"><a class="page-link" href="#">5</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customer Detail Modal -->
+  <div class="modal fade" id="customerDetailModal" tabindex="-1" aria-labelledby="customerDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="customerDetailModalLabel">Customer Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center mb-4">
+            <div class="customer-detail-avatar">RS</div>
+            <h4>Rahul Sharma</h4>
+            <p class="text-muted">Premium Customer</p>
+            <span class="badge badge-premium">Premium</span>
+          </div>
+          
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h6 class="mb-3">Contact Information</h6>
+              <div class="mb-2"><strong>Email:</strong> rahul.sharma@example.com</div>
+              <div class="mb-2"><strong>Phone:</strong> +91 98765 43210</div>
+              <div class="mb-2"><strong>Location:</strong> Bangalore, India</div>
+            </div>
+            <div class="col-md-6">
+              <h6 class="mb-3">Customer Stats</h6>
+              <div class="mb-2"><strong>Total Orders:</strong> 8</div>
+              <div class="mb-2"><strong>Total Spent:</strong> ₹2,84,750</div>
+              <div class="mb-2"><strong>First Purchase:</strong> Jan 15, 2024</div>
+              <div class="mb-2"><strong>Last Purchase:</strong> Nov 12, 2025</div>
+            </div>
+          </div>
+          
+          <h6 class="mb-3">Shipping Address</h6>
+          <div class="mb-4">
+            Rahul Sharma<br>
+            123 Apple Avenue<br>
+            Bangalore, Karnataka 560001<br>
+            India
+          </div>
+          
+          <h6 class="mb-3">Recent Orders</h6>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Date</th>
+                  <th>Product</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="fw-semibold">#ORD-7842</td>
+                  <td>Nov 12, 2025</td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/store-card-13-iphone-nav-202509?wid=1200&hei=780&fmt=png-alpha&.v=dW5XbHI1eDVpd01qWUU4bFRtWGZXM1doT212VzJoWjBSKzRpbmNETHN1QnRHU3BERzdnOWdiQkwvWTZGajY2b1M0TjRWdzF2UjRGVEY0c3dBQVZ6VFN0TmdKaCs3NTJMbFVuOGp2LzI5RGc" class="order-history-image me-2" alt="iPhone 17 Pro">
+                      <div>iPhone 17 Pro</div>
+                    </div>
+                  </td>
+                  <td>₹1,29,900</td>
+                  <td><span class="badge badge-completed">Completed</span></td>
+                </tr>
+                <tr>
+                  <td class="fw-semibold">#ORD-7815</td>
+                  <td>Oct 28, 2025</td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="watch.jpg" class="order-history-image me-2" alt="Apple Watch">
+                      <div>Apple Watch Series 11</div>
+                    </div>
+                  </td>
+                  <td>₹59,900</td>
+                  <td><span class="badge badge-completed">Completed</span></td>
+                </tr>
+                <tr>
+                  <td class="fw-semibold">#ORD-7792</td>
+                  <td>Sep 15, 2025</td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img src="buds.jpg" class="order-history-image me-2" alt="AirPods Pro">
+                      <div>AirPods Pro (3rd Gen)</div>
+                    </div>
+                  </td>
+                  <td>₹30,900</td>
+                  <td><span class="badge badge-completed">Completed</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Edit Customer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Customer Modal -->
+  <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addCustomerModalLabel">Add New Customer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="customerFirstName" class="form-label">First Name</label>
+                  <input type="text" class="form-control" id="customerFirstName" placeholder="Enter first name">
+                </div>
+                <div class="mb-3">
+                  <label for="customerLastName" class="form-label">Last Name</label>
+                  <input type="text" class="form-control" id="customerLastName" placeholder="Enter last name">
+                </div>
+                <div class="mb-3">
+                  <label for="customerEmail" class="form-label">Email Address</label>
+                  <input type="email" class="form-control" id="customerEmail" placeholder="Enter email address">
+                </div>
+                <div class="mb-3">
+                  <label for="customerPhone" class="form-label">Phone Number</label>
+                  <input type="tel" class="form-control" id="customerPhone" placeholder="Enter phone number">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="customerLocation" class="form-label">Location</label>
+                  <select class="form-select" id="customerLocation">
+                    <option selected>Select location</option>
+                    <option value="bangalore">Bangalore</option>
+                    <option value="mumbai">Mumbai</option>
+                    <option value="delhi">Delhi</option>
+                    <option value="chennai">Chennai</option>
+                    <option value="hyderabad">Hyderabad</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="customerStatus" class="form-label">Status</label>
+                  <select class="form-select" id="customerStatus">
+                    <option value="active" selected>Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="new">New</option>
+                    <option value="premium">Premium</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="customerAddress" class="form-label">Shipping Address</label>
+                  <textarea class="form-control" id="customerAddress" rows="3" placeholder="Enter shipping address"></textarea>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary">Add Customer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Find a Store - Apple Store</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <!-- Custom CSS -->
+  <style>
+    /* Reuse your existing styles */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      background-color: #f6f6f8;
+      color: #1d1d1f;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 600;
+    }
+    
+    /* Footer text and link color fix */
+footer, footer a {
+  color: #3a3a3a !important;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+  color: #000;
+}
+
+
+    .navbar {
+      background-color: #f6f6f8;
+    }
+    
+    .navbar-brand, .nav-link {
+      color: #060606 !important;
+    }
+    
+    .btn-checkout {
+      background: linear-gradient(45deg, #060606, #0c0c0c);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 12px 30px;
+      font-weight: 600;
+    }
+    
+    .btn-checkout:hover {
+      background: linear-gradient(45deg, #fb15bd, #ff310d);
+    }
+    
+    /* Store locator specific styles */
+    .store-locator-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .store-locator-header {
+      margin-bottom: 40px;
+    }
+    
+    .store-locator-title {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    
+    .store-search {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+    
+    .search-input {
+      flex: 1;
+      min-width: 300px;
+      border: 1px solid #d2d2d7;
+      border-radius: 25px;
+      padding: 12px 20px;
+      font-size: 1rem;
+    }
+    
+    .search-btn {
+      background: #0071e3;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 12px 25px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .search-btn:hover {
+      background: #0056b3;
+    }
+    
+    .current-location-btn {
+      background: transparent;
+      border: 1px solid #d2d2d7;
+      border-radius: 25px;
+      padding: 12px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .current-location-btn:hover {
+      background: #f5f5f7;
+    }
+    
+    .store-locator-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+    
+    @media (max-width: 768px) {
+      .store-locator-content {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .stores-list {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    
+    .store-item {
+      padding: 20px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .store-item:hover {
+      background: #f8f8f8;
+    }
+    
+    .store-item.active {
+      background: #f0f7ff;
+      border-left: 4px solid #0071e3;
+    }
+    
+    .store-item:last-child {
+      border-bottom: none;
+    }
+    
+    .store-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+    
+    .store-address {
+      color: #6e6e73;
+      margin-bottom: 10px;
+    }
+    
+    .store-hours {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .store-status {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .store-status.open {
+      color: #34c759;
+    }
+    
+    .store-status.closed {
+      color: #ff3b30;
+    }
+    
+    .store-phone {
+      color: #0071e3;
+      text-decoration: none;
+    }
+    
+    .store-phone:hover {
+      text-decoration: underline;
+    }
+    
+    .store-services {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .service-tag {
+      background: #f5f5f7;
+      border-radius: 15px;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      color: #6e6e73;
+    }
+    
+    .store-map {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      height: 600px;
+      position: relative;
+    }
+    
+    .map-placeholder {
+      width: 100%;
+      height: 100%;
+      background: #f5f5f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: #6e6e73;
+    }
+    
+    .map-placeholder i {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #d2d2d7;
+    }
+    
+    .store-details {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      margin-top: 30px;
+    }
+    
+    .store-details-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    
+    .store-details-name {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    
+    .store-details-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .action-btn {
+      border: 1px solid #d2d2d7;
+      border-radius: 25px;
+      padding: 8px 16px;
+      background: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.9rem;
+    }
+    
+    .action-btn:hover {
+      background: #f5f5f7;
+    }
+    
+    .action-btn.primary {
+      background: #0071e3;
+      color: white;
+      border-color: #0071e3;
+    }
+    
+    .action-btn.primary:hover {
+      background: #0056b3;
+    }
+    
+    .store-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+    
+    @media (max-width: 768px) {
+      .store-info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .info-section h4 {
+      font-weight: 600;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+    
+    .hours-table {
+      width: 100%;
+    }
+    
+    .hours-table tr {
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .hours-table tr:last-child {
+      border-bottom: none;
+    }
+    
+    .hours-table td {
+      padding: 8px 0;
+    }
+    
+    .hours-table .day {
+      font-weight: 600;
+    }
+    
+    .hours-table .time {
+      text-align: right;
+      color: #6e6e73;
+    }
+    
+    .services-list {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .services-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .services-list li:last-child {
+      border-bottom: none;
+    }
+    
+    .services-list i {
+      color: #0071e3;
+    }
+    
+    .filters {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+      border: 1px solid #d2d2d7;
+      border-radius: 25px;
+      padding: 8px 16px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .filter-btn.active {
+      background: #0071e3;
+      color: white;
+      border-color: #0071e3;
+    }
+    
+    .filter-btn:hover:not(.active) {
+      background: #f5f5f7;
+    }
+    
+    .no-stores {
+      text-align: center;
+      padding: 40px 20px;
+      color: #6e6e73;
+    }
+    
+    .no-stores i {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #d2d2d7;
+    }
+
+     /* Apple-style shop button */
+    .shop-btn {
+      display: inline-block;
+      background-color: #0707078e;  /* Apple blue */
+      color: #fff;
+      font-weight: 500;
+      border: none;
+      border-radius: 25px;
+      padding: 8px 20px;
+      margin-top: 10px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .shop-btn:hover {
+      background-color: #060606;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation (same as your main page) -->
+  <nav class="navbar navbar-expand-lg navbar">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="Black-Apple-Logo-PNG-Photos.png" alt="Logo" width="25" height="25">
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <button class="btn" data-bs-toggle="modal" data-bs-target="#checkoutModal1">
+                <i class="bi bi-search"></i>
+              </button>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <button class="btn" data-bs-toggle="modal" data-bs-target="#checkoutModal2">
+                <i class="bi bi-bag-check-fill" style="font-size:20px; color:#000;"></i>
+              </button>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <button class="btn" data-bs-toggle="modal" data-bs-target="#checkoutModal3">
+                <i class="bi bi-list" style="font-size:20px; color:#000;"></i>
+              </button>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Store Locator Page Content -->
+  <div class="store-locator-container">
+    <div class="store-locator-header">
+      <h1 class="store-locator-title">Find a Store</h1>
+      
+      <div class="store-search">
+        <input type="text" class="search-input" id="storeSearch" placeholder="Search for a city, state, or zip code">
+        <button class="search-btn" id="searchBtn">
+          <i class="bi bi-search"></i> Search
+        </button>
+        <button class="current-location-btn" id="currentLocationBtn">
+          <i class="bi bi-geo-alt"></i> Use Current Location
+        </button>
+      </div>
+      
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All Stores</button>
+        <button class="filter-btn" data-filter="genius-bar">Genius Bar</button>
+        <button class="filter-btn" data-filter="today-at-apple">Today at Apple</button>
+        <button class="filter-btn" data-filter="open-now">Open Now</button>
+      </div>
+    </div>
+    
+    <div class="store-locator-content">
+      <!-- Stores List -->
+      <div class="stores-list" id="storesList">
+        <!-- Store items will be populated by JavaScript -->
+      </div>
+      
+      <!-- Map Section -->
+      <div class="store-map">
+        <div class="map-placeholder" id="mapPlaceholder">
+          <i class="bi bi-map"></i>
+          <p>Select a store to view its location</p>
+        </div>
+        <!-- In a real implementation, you would integrate with Google Maps or Apple Maps API -->
+      </div>
+    </div>
+    
+    <!-- Store Details Section (hidden by default) -->
+    <div class="store-details" id="storeDetails" style="display: none;">
+      <div class="store-details-header">
+        <div>
+          <h2 class="store-details-name" id="detailStoreName">Apple Store Name</h2>
+          <p class="store-address" id="detailStoreAddress">Store address will appear here</p>
+        </div>
+        <div class="store-details-actions">
+          <button class="action-btn">
+            <i class="bi bi-share"></i> Share
+          </button>
+          <button class="action-btn primary">
+            <i class="bi bi-calendar-check"></i> Reserve
+          </button>
+        </div>
+      </div>
+      
+      <div class="store-info-grid">
+        <div class="info-section">
+          <h4>Store Hours</h4>
+          <table class="hours-table" id="storeHours">
+            <!-- Hours will be populated by JavaScript -->
+          </table>
+        </div>
+        
+        <div class="info-section">
+          <h4>Store Services</h4>
+          <ul class="services-list" id="storeServices">
+            <!-- Services will be populated by JavaScript -->
+          </ul>
+        </div>
+        
+        <div class="info-section">
+          <h4>Contact</h4>
+          <p><strong>Phone:</strong> <a href="#" class="store-phone" id="storePhone">(000) 000-0000</a></p>
+          <p><strong>Email:</strong> <a href="#" id="storeEmail">store@apple.com</a></p>
+        </div>
+        
+        <div class="info-section">
+          <h4>Get Directions</h4>
+          <button class="action-btn">
+            <i class="bi bi-compass"></i> Open in Maps
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer (same as your main page) -->
+  <footer class="footer mt-5">
+    <div class="container">
+      <div class="text-start mb-4">
+        <p class="mb-1"><img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" width="15"> &nbsp; > &nbsp; Find a Store</p>
+      </div>
+
+      <div class="row footer-section">
+        <div class="col-6 col-md-2">
+          <h6>Shop and Learn</h6>
+          <ul>
+            <li><a href="#">Store</a></li>
+            <li><a href="#">Mac</a></li>
+            <li><a href="#">iPad</a></li>
+            <li><a href="#">iPhone</a></li>
+            <li><a href="#">Watch</a></li>
+            <li><a href="#">AirPods</a></li>
+            <li><a href="#">TV & Home</a></li>
+            <li><a href="#">AirTag</a></li>
+            <li><a href="#">Accessories</a></li>
+            <li><a href="#">Gift Cards</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <h6>Account</h6>
+          <ul>
+            <li><a href="#">Manage Your Apple Account</a></li>
+            <li><a href="#">Apple Store Account</a></li>
+            <li><a href="#">iCloud.com</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <h6>Apple Store</h6>
+          <ul>
+            <li><a href="#">Find a Store</a></li>
+            <li><a href="#">Genius Bar</a></li>
+            <li><a href="#">Today at Apple</a></li>
+            <li><a href="#">Ways to Buy</a></li>
+            <li><a href="#">Apple Trade In</a></li>
+            <li><a href="#">Recycling Programme</a></li>
+            <li><a href="#">Order Status</a></li>
+            <li><a href="#">Shopping Help</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <h6>About Apple</h6>
+          <ul>
+            <li><a href="#">Newsroom</a></li>
+            <li><a href="#">Apple Leadership</a></li>
+            <li><a href="#">Career Opportunities</a></li>
+            <li><a href="#">Investors</a></li>
+            <li><a href="#">Ethics & Compliance</a></li>
+            <li><a href="#">Contact Apple</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="more-ways">
+        More ways to shop: <a href="#">Find an Apple Store</a> or <a href="#">other retailer</a> near you. Or call 000800 040 1966.
+      </div>
+
+      <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between">
+        <div>Copyright © 2025 Apple Inc. All rights reserved.</div>
+        <div>
+          <a href="#">Privacy Policy</a> |
+          <a href="#">Terms of Use</a> |
+          <a href="#">Sales Policy</a> |
+          <a href="#">Legal</a> |
+          <a href="#">Site Map</a>
+        </div>
+        <div>India</div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="text-center mb-4">
+    <a href="index.html" class="shop-btn" style="background-color:#050505cd;">BACK</a>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Store Locator JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Sample store data
+      const stores = [
+        {
+          id: 1,
+          name: "Apple Saket",
+          address: "Select Citywalk, Saket District Centre, New Delhi, Delhi 110017",
+          phone: "+91 11 3310 5501",
+          email: "apple_saket@apple.com",
+          hours: {
+            Monday: "10:00 AM - 10:00 PM",
+            Tuesday: "10:00 AM - 10:00 PM",
+            Wednesday: "10:00 AM - 10:00 PM",
+            Thursday: "10:00 AM - 10:00 PM",
+            Friday: "10:00 AM - 10:00 PM",
+            Saturday: "10:00 AM - 10:00 PM",
+            Sunday: "11:00 AM - 9:00 PM"
+          },
+          services: ["Genius Bar", "Today at Apple", "Personal Setup", "Business Services"],
+          coordinates: { lat: 28.5275, lng: 77.2191 },
+          isOpen: true,
+          tags: ["genius-bar", "today-at-apple"]
+        },
+        {
+          id: 2,
+          name: "Apple Phoenix Marketcity",
+          address: "Phoenix Marketcity, Mahadevapura, Bengaluru, Karnataka 560048",
+          phone: "+91 80 6729 4000",
+          email: "apple_phoenix@apple.com",
+          hours: {
+            Monday: "11:00 AM - 9:00 PM",
+            Tuesday: "11:00 AM - 9:00 PM",
+            Wednesday: "11:00 AM - 9:00 PM",
+            Thursday: "11:00 AM - 9:00 PM",
+            Friday: "11:00 AM - 9:00 PM",
+            Saturday: "11:00 AM - 9:00 PM",
+            Sunday: "11:00 AM - 8:00 PM"
+          },
+          services: ["Genius Bar", "Today at Apple", "Business Services"],
+          coordinates: { lat: 12.9941, lng: 77.6974 },
+          isOpen: true,
+          tags: ["genius-bar", "today-at-apple"]
+        },
+        {
+          id: 3,
+          name: "Apple High Street Phoenix",
+          address: "High Street Phoenix, Lower Parel, Mumbai, Maharashtra 400013",
+          phone: "+91 22 4910 1000",
+          email: "apple_phoenix_mumbai@apple.com",
+          hours: {
+            Monday: "11:00 AM - 9:30 PM",
+            Tuesday: "11:00 AM - 9:30 PM",
+            Wednesday: "11:00 AM - 9:30 PM",
+            Thursday: "11:00 AM - 9:30 PM",
+            Friday: "11:00 AM - 9:30 PM",
+            Saturday: "11:00 AM - 9:30 PM",
+            Sunday: "11:00 AM - 9:00 PM"
+          },
+          services: ["Genius Bar", "Personal Setup", "Education Store"],
+          coordinates: { lat: 19.0016, lng: 72.8262 },
+          isOpen: false,
+          tags: ["genius-bar"]
+        },
+        {
+          id: 4,
+          name: "Apple Ambience Mall",
+          address: "Ambience Mall, Vasant Kunj, New Delhi, Delhi 110070",
+          phone: "+91 11 4739 5000",
+          email: "apple_ambience@apple.com",
+          hours: {
+            Monday: "10:30 AM - 9:30 PM",
+            Tuesday: "10:30 AM - 9:30 PM",
+            Wednesday: "10:30 AM - 9:30 PM",
+            Thursday: "10:30 AM - 9:30 PM",
+            Friday: "10:30 AM - 9:30 PM",
+            Saturday: "10:30 AM - 9:30 PM",
+            Sunday: "11:00 AM - 9:00 PM"
+          },
+          services: ["Genius Bar", "Today at Apple", "Business Services", "Education Store"],
+          coordinates: { lat: 28.5245, lng: 77.1555 },
+          isOpen: true,
+          tags: ["genius-bar", "today-at-apple"]
+        }
+      ];
+
+      // DOM Elements
+      const storesList = document.getElementById('storesList');
+      const storeDetails = document.getElementById('storeDetails');
+      const storeSearch = document.getElementById('storeSearch');
+      const searchBtn = document.getElementById('searchBtn');
+      const currentLocationBtn = document.getElementById('currentLocationBtn');
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      
+      // Current filter state
+      let currentFilter = 'all';
+      let filteredStores = [...stores];
+      
+      // Initialize the store list
+      renderStores(filteredStores);
+      
+      // Search functionality
+      searchBtn.addEventListener('click', handleSearch);
+      storeSearch.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          handleSearch();
+        }
+      });
+      
+      // Current location functionality
+      currentLocationBtn.addEventListener('click', function() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            function(position) {
+              const userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+              };
+              
+              // Sort stores by distance (simplified - in real app, calculate actual distance)
+              filteredStores.sort((a, b) => {
+                // Simple approximation - in real app, use proper distance calculation
+                const distA = Math.abs(a.coordinates.lat - userLocation.lat) + Math.abs(a.coordinates.lng - userLocation.lng);
+                const distB = Math.abs(b.coordinates.lat - userLocation.lat) + Math.abs(b.coordinates.lng - userLocation.lng);
+                return distA - distB;
+              });
+              
+              renderStores(filteredStores);
+              showNotification('Stores sorted by distance from your location');
+            },
+            function(error) {
+              showNotification('Unable to get your location. Please enable location services.');
+            }
+          );
+        } else {
+          showNotification('Geolocation is not supported by this browser.');
+        }
+      });
+      
+      // Filter functionality
+      filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const filter = this.getAttribute('data-filter');
+          
+          // Update active filter button
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          this.classList.add('active');
+          
+          currentFilter = filter;
+          applyFilters();
+        });
+      });
+      
+      // Function to handle search
+      function handleSearch() {
+        const searchTerm = storeSearch.value.toLowerCase().trim();
+        
+        if (searchTerm === '') {
+          filteredStores = [...stores];
+        } else {
+          filteredStores = stores.filter(store => 
+            store.name.toLowerCase().includes(searchTerm) ||
+            store.address.toLowerCase().includes(searchTerm)
+          );
+        }
+        
+        applyFilters();
+      }
+      
+      // Function to apply filters
+      function applyFilters() {
+        let result = [...filteredStores];
+        
+        if (currentFilter === 'genius-bar') {
+          result = result.filter(store => store.tags.includes('genius-bar'));
+        } else if (currentFilter === 'today-at-apple') {
+          result = result.filter(store => store.tags.includes('today-at-apple'));
+        } else if (currentFilter === 'open-now') {
+          result = result.filter(store => store.isOpen);
+        }
+        
+        renderStores(result);
+      }
+      
+      // Function to render stores list
+      function renderStores(storesToRender) {
+        if (storesToRender.length === 0) {
+          storesList.innerHTML = `
+            <div class="no-stores">
+              <i class="bi bi-geo-alt"></i>
+              <h3>No stores found</h3>
+              <p>Try adjusting your search or filter criteria</p>
+            </div>
+          `;
+          return;
+        }
+        
+        storesList.innerHTML = storesToRender.map(store => `
+          <div class="store-item" data-store-id="${store.id}">
+            <div class="store-name">${store.name}</div>
+            <div class="store-address">${store.address}</div>
+            <div class="store-hours">
+              <div class="store-status ${store.isOpen ? 'open' : 'closed'}">
+                ${store.isOpen ? 'Open' : 'Closed'}
+              </div>
+              <div>Today: ${store.hours[getCurrentDay()]}</div>
+            </div>
+            <a href="tel:${store.phone}" class="store-phone">${store.phone}</a>
+            <div class="store-services">
+              ${store.services.map(service => `<span class="service-tag">${service}</span>`).join('')}
+            </div>
+          </div>
+        `).join('');
+        
+        // Add click event listeners to store items
+        document.querySelectorAll('.store-item').forEach(item => {
+          item.addEventListener('click', function() {
+            const storeId = parseInt(this.getAttribute('data-store-id'));
+            const store = stores.find(s => s.id === storeId);
+            
+            if (store) {
+              showStoreDetails(store);
+              
+              // Update active store in list
+              document.querySelectorAll('.store-item').forEach(i => i.classList.remove('active'));
+              this.classList.add('active');
+            }
+          });
+        });
+      }
+      
+      // Function to show store details
+      function showStoreDetails(store) {
+        // Update store details
+        document.getElementById('detailStoreName').textContent = store.name;
+        document.getElementById('detailStoreAddress').textContent = store.address;
+        document.getElementById('storePhone').textContent = store.phone;
+        document.getElementById('storePhone').href = `tel:${store.phone}`;
+        document.getElementById('storeEmail').textContent = store.email;
+        document.getElementById('storeEmail').href = `mailto:${store.email}`;
+        
+        // Update store hours
+        const hoursTable = document.getElementById('storeHours');
+        hoursTable.innerHTML = Object.entries(store.hours).map(([day, time]) => `
+          <tr>
+            <td class="day">${day}</td>
+            <td class="time">${time}</td>
+          </tr>
+        `).join('');
+        
+        // Update store services
+        const servicesList = document.getElementById('storeServices');
+        servicesList.innerHTML = store.services.map(service => `
+          <li><i class="bi bi-check-circle"></i> ${service}</li>
+        `).join('');
+        
+        // Show store details section
+        storeDetails.style.display = 'block';
+        
+        // Update map placeholder (in real app, this would show actual map)
+        document.getElementById('mapPlaceholder').innerHTML = `
+          <i class="bi bi-geo-alt-fill"></i>
+          <p>${store.name}</p>
+          <p style="font-size: 0.9rem; margin-top: 10px;">${store.address}</p>
+          <button class="action-btn" style="margin-top: 15px;">
+            <i class="bi bi-compass"></i> View in Maps
+          </button>
+        `;
+      }
+      
+      // Helper function to get current day
+      function getCurrentDay() {
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        return days[new Date().getDay()];
+      }
+      
+      // Helper function to show notifications
+      function showNotification(message) {
+        // Simple notification - in real app, use a proper notification system
+        alert(message);
+      }
+    });
+  </script>
+</body>
+</html>
